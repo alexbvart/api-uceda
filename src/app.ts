@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import './database';
-import {createRoles} from './libs/initialSetup';
+import {createRoles, createBrands, createCategories} from './libs/initialSetup';
 import morgan from 'morgan';
 import cors from 'cors';
 import indexRouter from './routers/router';
@@ -15,7 +15,8 @@ export class App {
         this.middlewares()
         this.routes()
         createRoles()
-
+        createBrands()
+        createCategories()
     }
 
     /**

@@ -51,7 +51,7 @@ class AuthController {
      */
     public async singIn(req: Request, res: Response) {
 
-        const userFound = await User.findOne({ email: req.body.email }).populate("roles")
+        const userFound = await User.findOne({ username: req.body.username }).populate("roles")
 
         if (!userFound)
             return res.status(400).json({ messege: "User not found" })
