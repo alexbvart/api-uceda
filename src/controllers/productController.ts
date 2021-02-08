@@ -15,8 +15,8 @@ class ProductController {
      * create
      */
     public async create(req: Request, res: Response) {
-        const { name, description, price, stock, status, id_category, id_brand } = req.body
-        const newProduct = new Product({ name, description, price, stock, status, id_category, id_brand })
+        const { name, description, price, stock, status, category, brand } = req.body
+        const newProduct = new Product({ name, description, price, stock, status, category, brand })
         const productSaved = await newProduct.save()
         console.log(productSaved);
 
