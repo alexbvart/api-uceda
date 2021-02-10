@@ -1,6 +1,8 @@
 import Role from '../models/Role';
 import Brand from "../models/Brand";
-import Category from "../models/ProductCategory"        
+import Category from "../models/ProductCategory" 
+import Workstation from '../models/Workstation';
+       
 
 export const createRoles = async () => {
     try {
@@ -56,6 +58,28 @@ export const createCategories = async() =>{
                 new Category({ name: 'Micro Controlador' }).save(),
                 new Category({ name: 'Multi-Tester' }).save(),
                 new Category({ name: 'Componentes' }).save(),
+            ])
+           
+
+        }
+    } catch (error) {
+        console.error(error);
+
+    }
+}
+
+export const createWorkstation = async() =>{
+
+    try {
+        const count = await Workstation.estimatedDocumentCount()
+        if (count > 0) {
+            return
+        } else {
+
+            const workstation = await Promise.all([
+                new Category({ name: 'Ventas' }).save(),
+                new Category({ name: 'RR.HH' }).save(),
+                new Category({ name: 'Administrador' }).save(),
             ])
            
 

@@ -65,6 +65,19 @@ class AuthController {
         res.json({ token: token })
     }
 
+    /**
+     * all
+     */
+    public async all(req: Request, res: Response) {
+        try {
+            const users = await User.find()
+            res.status(200).json(users)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
 }
 
 const authController = new AuthController();

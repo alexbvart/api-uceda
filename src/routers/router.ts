@@ -6,6 +6,10 @@ import brandRoute from './brand/brand.routes';
 import categoryRoute from './productCategory/productCategory.routes';
 import authRoute from './auth/auth.routes';
 import roleRoute from "./roles/roles.routes";
+import saleRoutes from './sale/sale.routes';
+import employeeRoutes from './employee/employee.routes';
+import workstationRoutes from './workstation/workstation.routes';
+import coustomerRoutes from './coustomer/coustomer.routes';
 class Route{
 
     public router: Router = Router()
@@ -23,6 +27,10 @@ class Route{
         this.router.use('/marca', brandRoute)
         this.router.use('/categoria', categoryRoute)
         this.router.use('/rol', roleRoute)
+        this.router.use('/venta',saleRoutes)
+        this.router.use('/empleado', employeeRoutes)
+        this.router.use('/puesto', workstationRoutes)
+        this.router.use('/cliente', coustomerRoutes)
     }
 }
 

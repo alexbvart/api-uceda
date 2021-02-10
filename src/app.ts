@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import './database';
-import {createRoles, createBrands, createCategories} from './libs/initialSetup';
+import {createRoles, createBrands, createCategories, createWorkstation} from './libs/initialSetup';
 import morgan from 'morgan';
 import cors from 'cors';
 import indexRouter from './routers/router';
@@ -17,6 +17,7 @@ export class App {
         createRoles()
         createBrands()
         createCategories()
+        createWorkstation()
     }
 
     /**
