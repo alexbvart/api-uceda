@@ -77,9 +77,9 @@ export const createWorkstation = async() =>{
         } else {
 
             const workstation = await Promise.all([
-                new Category({ name: 'Ventas' }).save(),
-                new Category({ name: 'RR.HH' }).save(),
-                new Category({ name: 'Administrador' }).save(),
+                new Workstation({ name: 'Ventas' }).save(),
+                new Workstation({ name: 'RR.HH' }).save(),
+                new Workstation({ name: 'Administrador' }).save(),
             ])
            
 
