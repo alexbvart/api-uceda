@@ -18,6 +18,7 @@ class SaleRouter {
         this.router.post('/', [authJWT.verifyToken, authJWT.isVentas] ,saleController.create)
         this.router.put('/:id', [authJWT.verifyToken, authJWT.isVentas] ,saleController.update)
         this.router.delete('/:id',[authJWT.verifyToken, authJWT.isVentas],saleController.delete)
+        this.router.delete('/detalles/:id', saleController.deleteDetails)
     }
 
 }

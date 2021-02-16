@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
 import Product from '../models/Product';
+import Category from '../models/ProductCategory';
+import Brand from '../models/Brand';
+
+
 
 class ProductController {
 
@@ -9,7 +13,29 @@ class ProductController {
     public async findAll(req: Request, res: Response) {
         try {
             const products = await Product.find()
-            res.status(200).json(products)
+            let brands: any[] = []
+            let categories: any[] = []
+
+            for (let i = 0; i < products.length; i++) {
+                const brand = await Brand.findById(products[i].brand);
+                const category = await Category.findById(products[i].category);
+                brands[i] = brand.name;
+                categories[i] = category.name
+            }
+            let iterator = -1
+            var list = products.map((element: any) => {
+                iterator += 1
+                return {
+                    "_id": element._id,
+                    "name": element.name,
+                    "description": element.description,
+                    "price": element.price,
+                    "stock": element.stock,
+                    "category": categories[iterator],
+                    "brand": brands[iterator],
+                }
+            })
+            res.status(200).json(list)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -42,7 +68,18 @@ class ProductController {
     public async findById(req: Request, res: Response) {
         try {
             const product = await Product.findById(req.params.id)
-            res.status(200).json(product)
+            const category = await Category.findById(product.category)
+            const brand = await Brand.findById(product.brand)
+            var newProduct = {
+                "_id": product._id,
+                "name": product.name,
+                "description": product.description,
+                "price": product.price,
+                "stock": product.stock,
+                "category": category.name,
+                "brand": brand.name,
+            }
+            res.status(200).json(newProduct)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -60,7 +97,7 @@ class ProductController {
             const productUpdate = await Product.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             });
-           return res.status(204).json({ message: "updated" });
+            return res.status(204).json({ message: "updated" });
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })

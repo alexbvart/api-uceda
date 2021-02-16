@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
+import Coustomer from '../models/Coustomer';
+import Product from '../models/Product';
 import Sale from '../models/Sale'
 import Detail from '../models/SaleDetail';
+import User from '../models/User';
 
 
 class SaleController {
@@ -12,9 +15,62 @@ class SaleController {
     */
     public async findAll(req: Request, res: Response) {
         try {
-            const sale = await Sale.find()
-            const details = await Detail.find(sale._id)
-            res.status(200).json({ sale, details })
+
+            const sales = await Sale.find()
+            const details = await Detail.find()
+            const products = await Product.find()
+            // return res.json(details)
+            let clients: any[] = []
+            let users: any[] = []
+            for (let i = 0; i < sales.length; i++) {
+                const client = await Coustomer.findById(sales[i].client);
+                const user = await User.findById(sales[i].user)
+                clients[i] = client.name
+                users[i] = user.username
+            }
+
+            let newlist: {
+                _id: any,
+                cuantity: any,
+                product: any,
+                price: any
+            }[] = [];
+            let iterator = -1
+            var list = sales.map((element: any) => {
+                iterator += 1
+
+
+                newlist = []
+                for (let j = 0; j < details.length; j++) {
+                    const detail = details[j].sale + ""
+                    const sale = element._id + ""
+                    const d = details[j]
+                    if (sale.match(detail)) {
+                        const idD = d.product + ""
+                        for (let k = 0; k < products.length; k++) {
+                            const idP = products[k]._id + ""
+                            if (idD.match(idP)) {
+                                newlist[j] = {
+                                    _id: d._id,
+                                    cuantity: d.cuantity,
+                                    product: products[k].name,
+                                    price: products[k].price
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return {
+                    "_id": element._id,
+                    "date": element.date,
+                    "total": element.total,
+                    "client": clients[iterator],
+                    "user": users[iterator],
+                    "details": newlist
+                }
+            })
+            res.status(200).json(list)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -61,7 +117,43 @@ class SaleController {
         try {
             const sale = await Sale.findById(req.params.id)
             const details = await Detail.find({ sale: sale._id })
-            res.status(200).json({ sale, details })
+            const products = await Product.find()
+            let newlist: {
+                _id: any,
+                cuantity: any,
+                product: any,
+                price: any
+            }[] = [];
+            for (let j = 0; j < details.length; j++) {
+                const d = details[j]
+                for (let k = 0; k < products.length; k++) {
+                    const idP = products[k]._id + ""
+                    const idD = d.product + ""
+                    if (idD.match(idP)) {
+                        newlist[j] = {
+                            _id: d._id,
+                            cuantity: d.cuantity,
+                            product: products[k].name,
+                            price: products[k].price
+                        }
+                    }
+                }
+            }
+
+            const client = await Coustomer.findById(sale.client);
+            const user = await User.findById(sale.user)
+
+
+            var list: { _id: any, date: any, total: any, client: any, user: any, details: any } = {
+                "_id": sale._id,
+                "date": sale.date,
+                "total": sale.total,
+                "client": client.name,
+                "user": user.username,
+                "details": newlist
+            }
+
+            res.status(200).json(list)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -82,10 +174,10 @@ class SaleController {
             const updateSale = await Sale.findByIdAndUpdate(sale._id, { date, total, client, user }, {
                 new: true
             })
-        
+
             if (details.length > 0) {
                 await Detail.deleteMany({ sale: updateSale._id })
-            
+
                 details.forEach(async (element: any) => {
                     const detail = new Detail({
                         cuantity: element.cuantity,
@@ -94,12 +186,12 @@ class SaleController {
                     })
                     await detail.save()
                 });
-                // const foundDetail = await Detail.find({ sale: sale._id }) //* Details  
+                // const foundDetail = await Detail.find({ sale: sale._id }) //* Details
 
-                res.status(200).json({message: "updated"})
+                res.status(200).json({ message: "updated" })
             }
 
-           
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -112,7 +204,23 @@ class SaleController {
     public async delete(req: Request, res: Response) {
         try {
             const { id } = req.params;
+            const sale = await Sale.findById(id)
+
+            await Detail.deleteMany({ sale: id })
             await Sale.findByIdAndDelete(id)
+
+            res.status(200).json({ message: "Deleted" })
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+    /**
+     * deleteDetails
+     */
+    public async deleteDetails(req: Request, res: Response) {
+        try {
+            await Detail.deleteMany({ sale: req.params.id })
             res.status(200).json({ message: "Deleted" })
         } catch (error) {
             console.error(error);
@@ -121,6 +229,7 @@ class SaleController {
     }
 
 }
+
 
 const saleController = new SaleController()
 export default saleController
