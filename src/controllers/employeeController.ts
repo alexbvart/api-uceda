@@ -18,25 +18,26 @@ class EmployeeController {
         try {
             const employees = await Employee.find()
             const workstations = await Workstation.find()
-            // let list = Array<NewEmployee>();
-            // let list: NewEmployee[]= [];
-            var list = await employees.map((element: any) => {
-                let name;
-                workstations.forEach((work: any) => {
-                        if(work._id = element.workstation){
-                            name = work.name
+            var list = employees.map((element: any) => {
+
+                let station = element.workstation + ""
+
+                for (const work of workstations) {
+                    if (work._id == station) {
+                        return {
+                            _id: element._id,
+                            name: element.name,
+                            lastname: element.lastname,
+                            dni: element.dni,
+                            email: element.email,
+                            phone: element.phone,
+                            birth: element.birth,
+                            workstation: work.name,
+                            user: element.user
                         }
-                    }); 
-               
-                    return {
-                        "name": element.name,
-                        "lastname": element.lastname,
-                        "dni": element.dni,
-                        "email": element.email,
-                        "phone": element.phone,
-                        "birth": element.birth,
-                        "workstation": name,
+
                     }
+                }
             });
 
             res.status(200).json(list)
@@ -54,13 +55,16 @@ class EmployeeController {
         try {
             const salt = await bcrypt.genSalt(10);
             const { name, lastname, dni, email, phone, birth, workstation } = req.body
+            const station = await Workstation.findById(workstation)
+
             const user = new User({
                 email: email,
                 username: name,
                 password: await bcrypt.hash(dni, salt),
             });
-            const rol = await Role.findOne({ name: "ventas" })
+
             const newUser = await user.save()
+            const rol = await Role.findOne({ name: station.name })
             await User.findByIdAndUpdate(newUser._id, { roles: rol._id })
             const newEmployee = new Employee({ name, lastname, dni, email, phone, birth, workstation, user: newUser._id })
             const savedEmployee = await newEmployee.save()
@@ -79,7 +83,28 @@ class EmployeeController {
     public async findById(req: Request, res: Response) {
         try {
             const employee = await Employee.findById(req.params.id)
-            res.status(200).json(employee)
+            const workstations = await Workstation.find()
+            let station = employee.workstation + ""
+
+            for (const work of workstations) {
+                if (work._id == station) {
+
+                    res.status(200).json({
+                        _id: employee._id,
+                        name: employee.name,
+                        lastname: employee.lastname,
+                        dni: employee.dni,
+                        email: employee.email,
+                        phone: employee.phone,
+                        birth: employee.birth,
+                        workstation: work.name,
+                        user: employee.user
+                    })
+
+
+                }
+            }
+
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })

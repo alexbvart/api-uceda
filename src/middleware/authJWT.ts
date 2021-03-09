@@ -37,7 +37,7 @@ class AuthJWT {
 
             for (let i = 0; i < roles.length; i++) {
                 const rol = roles[i].name;
-                if (rol == "admin") {
+                if (rol == "Administrador") {
                     next()
                     return;
                 }
@@ -60,7 +60,7 @@ class AuthJWT {
 
             for (let i = 0; i < roles.length; i++) {
                 const rol = roles[i].name;
-                if (rol == "ventas") {
+                if (rol == "Ventas") {
                     next()
                     return;
                 }
@@ -78,7 +78,7 @@ class AuthJWT {
 
             for (let i = 0; i < roles.length; i++) {
                 const rol = roles[i].name;
-                if (rol == "rrhh") {
+                if (rol == "RR.HH") {
                     next()
                     return;
                 }

@@ -77,6 +77,49 @@ class AuthController {
             res.status(500).json({ message: "Error of server" })
         }
     }
+    /**
+  * findID
+  */
+    public async findID(req: Request, res: Response) {
+        try {
+            const user = await User.findById(req.params.id)
+            res.status(200).json(user)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
+    public async falseUser(req: Request, res: Response) {
+        try {
+            const user = await User.findById(req.params.id)
+            const updateUser = await User.findByIdAndUpdate(req.params.id, {
+                status: false
+            }, {
+                new: true
+            });
+            res.status(200).json(updateUser)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
+    public async trueUser(req: Request, res: Response) {
+        try {
+            const user = await User.findById(req.params.id)
+            const updateUser = await User.findByIdAndUpdate(req.params.id, {
+                status: true
+            }, {
+                new: true
+            });
+            res.status(200).json(updateUser)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
 
 }
 
