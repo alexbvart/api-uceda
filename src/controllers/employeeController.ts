@@ -17,6 +17,7 @@ class EmployeeController {
     public async findAll(req: Request, res: Response) {
         try {
             const employees = await Employee.find()
+<<<<<<< HEAD
             let workstations: any[] = []
             for (let i = 0; i < employees.length; i++) {
                 const element = await Workstation.findById(employees[i].workstation);
@@ -35,6 +36,28 @@ class EmployeeController {
                     "phone": element.phone,
                     "birth": element.birth,
                     "workstation": workstations[iterator],
+=======
+            const workstations = await Workstation.find()
+            var list = employees.map((element: any) => {
+
+                let station = element.workstation + ""
+
+                for (const work of workstations) {
+                    if (work._id == station) {
+                        return {
+                            _id: element._id,
+                            name: element.name,
+                            lastname: element.lastname,
+                            dni: element.dni,
+                            email: element.email,
+                            phone: element.phone,
+                            birth: element.birth,
+                            workstation: work.name,
+                            user: element.user
+                        }
+
+                    }
+>>>>>>> dev
                 }
             });
 
@@ -53,11 +76,14 @@ class EmployeeController {
         try {
             const salt = await bcrypt.genSalt(10);
             const { name, lastname, dni, email, phone, birth, workstation } = req.body
+            const station = await Workstation.findById(workstation)
+
             const user = new User({
                 email: email,
                 username: name,
                 password: await bcrypt.hash(dni, salt),
             });
+<<<<<<< HEAD
             let rolname;
             const newWorkstation = await Workstation.findById(workstation)
             if(newWorkstation.name == 'Ventas'){
@@ -68,7 +94,11 @@ class EmployeeController {
                 rolname = 'admin'
             }
             const rol = await Role.findOne({ name: rolname})
+=======
+
+>>>>>>> dev
             const newUser = await user.save()
+            const rol = await Role.findOne({ name: station.name })
             await User.findByIdAndUpdate(newUser._id, { roles: rol._id })
             const newEmployee = new Employee({ name, lastname, dni, email, phone, birth, workstation, user: newUser._id })
             const savedEmployee = await newEmployee.save()
@@ -87,6 +117,7 @@ class EmployeeController {
     public async findById(req: Request, res: Response) {
         try {
             const employee = await Employee.findById(req.params.id)
+<<<<<<< HEAD
             const workstation = await Workstation.findById(employee.workstation)
             var newEmployee: { _id: any, name: any, lastname: any, dni: any, email: any, phone: any, birth: any, workstation: any } = {
                 "_id": employee._id,
@@ -100,6 +131,30 @@ class EmployeeController {
             }
 
             res.status(200).json(newEmployee)
+=======
+            const workstations = await Workstation.find()
+            let station = employee.workstation + ""
+
+            for (const work of workstations) {
+                if (work._id == station) {
+
+                    res.status(200).json({
+                        _id: employee._id,
+                        name: employee.name,
+                        lastname: employee.lastname,
+                        dni: employee.dni,
+                        email: employee.email,
+                        phone: employee.phone,
+                        birth: employee.birth,
+                        workstation: work.name,
+                        user: employee.user
+                    })
+
+
+                }
+            }
+
+>>>>>>> dev
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })

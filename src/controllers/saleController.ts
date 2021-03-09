@@ -3,7 +3,11 @@ import Coustomer from '../models/Coustomer';
 import Product from '../models/Product';
 import Sale from '../models/Sale'
 import Detail from '../models/SaleDetail';
+<<<<<<< HEAD
 import User from '../models/User';
+=======
+import productController from './productController';
+>>>>>>> dev
 
 
 class SaleController {
@@ -84,8 +88,6 @@ class SaleController {
     public async create(req: Request, res: Response) {
         try {
             const { date, total, client, user, details } = req.body
-
-
             if (details.length > 0) {
                 const newSale = new Sale({ date, total, client, user })
                 const savedSale = await newSale.save()
@@ -95,6 +97,7 @@ class SaleController {
                         product: element.product,
                         sale: savedSale._id
                     })
+                    productController.updateStockForSale(detail);
                     await detail.save()
                 });
             } else {

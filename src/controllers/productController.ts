@@ -5,6 +5,7 @@ import Brand from '../models/Brand';
 
 
 
+
 class ProductController {
 
     /**
@@ -40,19 +41,15 @@ class ProductController {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
         }
-
     }
 
     /**
-     * create
+     * findById
      */
-    public async create(req: Request, res: Response) {
+    public async findById(req: Request, res: Response) {
         try {
-            const { name, description, price, stock, status, category, brand } = req.body
-            const newProduct = new Product({ name, description, price, stock, status, category, brand })
-            const productSaved = await newProduct.save()
-            res.status(201).json({ message: "created" })
-
+            const product = await Product.findById(req.params.id)
+            res.status(200).json(product)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -61,12 +58,59 @@ class ProductController {
     }
 
 
+    /**
+    * findTrue
+    */
+    public async findTrue(req: Request, res: Response) {
+        try {
+            const products = await Product.find()
+
+            var response = products.map((element: any)=>{
+                if (element.status == true) {
+                    return element
+                }else{
+                    return 
+                }
+            })
+
+            res.status(200).json(response)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+
+    }
 
     /**
-     * findById
-     */
-    public async findById(req: Request, res: Response) {
+    * findFalse
+    */
+     public async findFalse(req: Request, res: Response) {
         try {
+            const products = await Product.find()
+
+            var response = products.map((element: any)=>{
+                if (element.status == false) {
+                    return element
+                }else{
+                    return 
+                }
+            })
+
+            res.status(200).json(response)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+
+    }
+
+
+    /**
+    * findBajoStock
+    */
+     public async findBajoStock(req: Request, res: Response) {
+        try {
+<<<<<<< HEAD
             const product = await Product.findById(req.params.id)
             const category = await Category.findById(product.category)
             const brand = await Brand.findById(product.brand)
@@ -80,6 +124,36 @@ class ProductController {
                 "brand": brand.name,
             }
             res.status(200).json(newProduct)
+=======
+            const products = await Product.find()
+
+            var response = products.map((element: any)=>{
+                if (element.stock < 15) {
+                    return element
+                }else{
+                    return 
+                }
+            })
+
+            res.status(200).json(response)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+
+    }
+
+    /**
+       * create
+       */
+    public async create(req: Request, res: Response) {
+        try {
+            const { name, description, price, stock, status, category, brand } = req.body
+            const newProduct = new Product({ name, description, price, stock, status, category, brand })
+            const productSaved = await newProduct.save()
+            res.status(201).json({ message: "created" })
+
+>>>>>>> dev
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
@@ -101,6 +175,32 @@ class ProductController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
+        }
+
+    }
+
+    /**
+     * updateStockForSale
+     */
+    public async updateStockForSale(saleDetail: any) {
+
+        try {
+            const cuantity = saleDetail.cuantity
+            const productID = saleDetail.product
+            const product = await Product.findById(productID);
+            const stock = product.stock - cuantity
+            let status = true
+            if (stock <= 0) {
+                status = false
+            }
+            const productUpdate = await Product.findByIdAndUpdate(productID, {
+                stock: stock,
+                status: status
+            }, {
+                new: true
+            });
+        } catch (error) {
+            console.error(error);
         }
 
     }
