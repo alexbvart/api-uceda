@@ -7,7 +7,7 @@ const productSchema = new Schema(
         description: String,
         price: Number,
         stock: Number,
-        estatus: Boolean,
+        status: Boolean,
         category: {
             type: Schema.Types.ObjectId,
             ref: "Category",
