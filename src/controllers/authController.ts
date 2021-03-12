@@ -26,7 +26,7 @@ class AuthController {
                 const id = foundRoles.map((role: { _id: any; }) => role._id)
                 newUser.roles = id;
             } else {
-                const rol = await Role.findOne({ name: "ventas" })
+                const rol = await Role.findOne({ name: "Administrador"})
                 newUser.roles = [rol._id]
             }
 

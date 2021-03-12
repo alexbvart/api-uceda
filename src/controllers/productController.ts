@@ -110,21 +110,6 @@ class ProductController {
     */
      public async findBajoStock(req: Request, res: Response) {
         try {
-<<<<<<< HEAD
-            const product = await Product.findById(req.params.id)
-            const category = await Category.findById(product.category)
-            const brand = await Brand.findById(product.brand)
-            var newProduct = {
-                "_id": product._id,
-                "name": product.name,
-                "description": product.description,
-                "price": product.price,
-                "stock": product.stock,
-                "category": category.name,
-                "brand": brand.name,
-            }
-            res.status(200).json(newProduct)
-=======
             const products = await Product.find()
 
             var response = products.map((element: any)=>{
@@ -153,7 +138,6 @@ class ProductController {
             const productSaved = await newProduct.save()
             res.status(201).json({ message: "created" })
 
->>>>>>> dev
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })

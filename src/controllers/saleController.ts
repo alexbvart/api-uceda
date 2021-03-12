@@ -3,12 +3,8 @@ import Coustomer from '../models/Coustomer';
 import Product from '../models/Product';
 import Sale from '../models/Sale'
 import Detail from '../models/SaleDetail';
-<<<<<<< HEAD
 import User from '../models/User';
-=======
 import productController from './productController';
->>>>>>> dev
-
 
 class SaleController {
 

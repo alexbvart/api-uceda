@@ -1,6 +1,6 @@
-import { Router} from "express";
+import { Router } from "express";
 import saleController from "../../controllers/saleController";
-import {authJWT} from '../../middleware';
+import { authJWT } from '../../middleware';
 class SaleRouter {
     public router: Router = Router()
 
@@ -12,12 +12,12 @@ class SaleRouter {
      * config
      */
     public config() {
-        
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas], saleController.findAll)
-        this.router.get('/:id',[authJWT.verifyToken, authJWT.isVentas],saleController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isVentas] ,saleController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isVentas] ,saleController.update)
-        this.router.delete('/:id',[authJWT.verifyToken, authJWT.isVentas],saleController.delete)
+
+        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], saleController.findAll)
+        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], saleController.findById)
+        this.router.post('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], saleController.create)
+        this.router.put('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], saleController.update)
+        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], saleController.delete)
         this.router.delete('/detalles/:id', saleController.deleteDetails)
     }
 
