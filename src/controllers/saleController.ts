@@ -33,7 +33,8 @@ class SaleController {
                 _id: any,
                 cuantity: any,
                 product: any,
-                price: any
+                price: any,
+                subTotal: any
             }[] = [];
             let iterator = -1
             var list = sales.map((element: any) => {
@@ -54,7 +55,8 @@ class SaleController {
                                     _id: d._id,
                                     cuantity: d.cuantity,
                                     product: products[k].name,
-                                    price: products[k].price
+                                    price: products[k].price,
+                                    subTotal: products[k].price * d.cuantity
                                 }
                             }
                         }
@@ -77,6 +79,61 @@ class SaleController {
         }
 
     }
+
+
+    
+    /**
+     * findById
+     */
+     public async findById(req: Request, res: Response) {
+        try {
+            const sale = await Sale.findById(req.params.id)
+            const details = await Detail.find({ sale: sale._id })
+            const products = await Product.find()
+            let newlist: {
+                _id: any,
+                cuantity: any,
+                product: any,
+                price: any,
+                subTotal: any
+            }[] = [];
+            for (let j = 0; j < details.length; j++) {
+                const d = details[j]
+                for (let k = 0; k < products.length; k++) {
+                    const idP = products[k]._id + ""
+                    const idD = d.product + ""
+                    if (idD.match(idP)) {
+                        newlist[j] = {
+                            _id: d._id,
+                            cuantity: d.cuantity,
+                            product: products[k].name,
+                            price: products[k].price,
+                            subTotal: products[k].price * d.cuantity
+                        }
+                    }
+                }
+            }
+
+            const client = await Coustomer.findById(sale.client);
+            const user = await User.findById(sale.user)
+
+
+            var list: { _id: any, date: any, total: any, client: any, user: any, details: any } = {
+                "_id": sale._id,
+                "date": sale.date,
+                "total": sale.total,
+                "client": client.name,
+                "user": user.username,
+                "details": newlist
+            }
+
+            res.status(200).json(list)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
 
     /**
      * create
@@ -109,55 +166,6 @@ class SaleController {
 
 
 
-    /**
-     * findById
-     */
-    public async findById(req: Request, res: Response) {
-        try {
-            const sale = await Sale.findById(req.params.id)
-            const details = await Detail.find({ sale: sale._id })
-            const products = await Product.find()
-            let newlist: {
-                _id: any,
-                cuantity: any,
-                product: any,
-                price: any
-            }[] = [];
-            for (let j = 0; j < details.length; j++) {
-                const d = details[j]
-                for (let k = 0; k < products.length; k++) {
-                    const idP = products[k]._id + ""
-                    const idD = d.product + ""
-                    if (idD.match(idP)) {
-                        newlist[j] = {
-                            _id: d._id,
-                            cuantity: d.cuantity,
-                            product: products[k].name,
-                            price: products[k].price
-                        }
-                    }
-                }
-            }
-
-            const client = await Coustomer.findById(sale.client);
-            const user = await User.findById(sale.user)
-
-
-            var list: { _id: any, date: any, total: any, client: any, user: any, details: any } = {
-                "_id": sale._id,
-                "date": sale.date,
-                "total": sale.total,
-                "client": client.name,
-                "user": user.username,
-                "details": newlist
-            }
-
-            res.status(200).json(list)
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: "Error of server" })
-        }
-    }
 
 
     /**

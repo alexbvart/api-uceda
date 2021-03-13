@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import Role from '../models/Role';
 import jwt from 'jsonwebtoken';
 import config from '../config';
+import Employee from '../models/Employee';
+import Workstation from '../models/Workstation';
 
 class AuthController {
 
@@ -26,7 +28,7 @@ class AuthController {
                 const id = foundRoles.map((role: { _id: any; }) => role._id)
                 newUser.roles = id;
             } else {
-                const rol = await Role.findOne({ name: "Administrador"})
+                const rol = await Role.findOne({ name: "Administrador" })
                 newUser.roles = [rol._id]
             }
 
@@ -62,7 +64,15 @@ class AuthController {
             { id: userFound._id },
             config.SECRET,
             { expiresIn: 86400 })
-        res.json({ token: token })
+        const empleado = await Employee.findOne({ user: userFound._id })
+        const workstation = await Workstation.findOne({ _id: empleado.workstation })
+        res.json({
+            token: token,
+            user_id: userFound._id,
+            roles: userFound.roles,
+            employee: empleado,
+            workstation: workstation
+        })
     }
 
     /**
@@ -120,6 +130,31 @@ class AuthController {
         }
     }
 
+    /**
+     * updatePassword
+     */
+    public async updatePassword(newPassword: any, user_id: any) {
+        const salt = await bcrypt.genSalt(10);
+        const userUpdate = await User.findByIdAndUpdate(user_id, {
+            password: await bcrypt.hash(newPassword, salt)
+        }, {
+            new: true
+        })
+
+    }
+
+       /**
+     * updateEmail
+     */
+        public async updateEmail(newEmail: any, user_id: any) {
+            
+            const userUpdate = await User.findByIdAndUpdate(user_id, {
+                email: newEmail
+            }, {
+                new: true
+            })
+            
+        }
 
 }
 

@@ -13,11 +13,11 @@ class CoustomerRouter {
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], coustomerController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], coustomerController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], coustomerController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], coustomerController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], coustomerController.delete)
+        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], coustomerController.findAll)
+        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], coustomerController.findById)
+        this.router.post('/', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.create)
+        this.router.put('/:id', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.update)
+        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.delete)
     }
 
 }

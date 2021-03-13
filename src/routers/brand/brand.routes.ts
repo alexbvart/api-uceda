@@ -14,11 +14,11 @@ class BrandRouter {
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], brandController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], brandController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], brandController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], brandController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isVentas, authJWT.isAdmin], brandController.delete)
+        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], brandController.findAll)
+        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], brandController.findById)
+        this.router.post('/', [authJWT.verifyToken, authJWT.isAdmin], brandController.create)
+        this.router.put('/:id', [authJWT.verifyToken, authJWT.isAdmin], brandController.update)
+        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isAdmin], brandController.delete)
     }
 
 }

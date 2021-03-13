@@ -5,6 +5,7 @@ import Employee from '../models/Employee';
 import User from '../models/User';
 import Role from '../models/Role';
 import Workstation from '../models/Workstation';
+import authController from './authController';
 
 
 
@@ -117,10 +118,18 @@ class EmployeeController {
     public async update(req: Request, res: Response) {
 
         try {
+            const employee = await Employee.findById(req.params.id);
+            if(req.body.dni){
+                authController.updatePassword(req.body.dni, employee.user)
+            }
+            if(req.body.email){
+                authController.updateEmail(req.body.email, employee.user)
+            }
             const updateEmployee = await Employee.findByIdAndUpdate(req.params.id, req.body, {
                 new: true
             });
-            res.status(204).json(updateEmployee)
+            
+            res.status(200).json(updateEmployee)
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Error of server" })
