@@ -1,23 +1,25 @@
 import { Router } from "express";
 import coustomerController from "../../controllers/coustomerController";
-import { authJWT } from '../../middleware';
+import { verifyRoleAuth, verifyToken } from "../../middleware/authJWT";
+
 class CoustomerRouter {
     public router: Router = Router()
 
     constructor() {
         this.config()
     }
-
+    private middlewareGet = ['Ventas', 'Administrador']
+    private middlewarePost = ['Admistrador']
     /**
      * config
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], coustomerController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], coustomerController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isAdmin], coustomerController.delete)
+        this.router.get('/', [verifyToken,verifyRoleAuth(this.middlewareGet)], coustomerController.findAll)
+        this.router.get('/:id', [verifyToken,verifyRoleAuth(this.middlewareGet)], coustomerController.findById)
+        this.router.post('/', [verifyToken,verifyRoleAuth(this.middlewarePost)], coustomerController.create)
+        this.router.put('/:id', [verifyToken,verifyRoleAuth(this.middlewarePost)], coustomerController.update)
+        this.router.delete('/:id', [verifyToken,verifyRoleAuth(this.middlewarePost)], coustomerController.delete)
     }
 
 }

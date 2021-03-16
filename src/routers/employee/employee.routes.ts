@@ -1,23 +1,25 @@
 import { Router } from "express";
 import employeeController from "../../controllers/employeeController";
-import { authJWT } from '../../middleware';
+import { verifyRoleAuth, verifyToken } from "../../middleware/authJWT";
+
 class EmployeeRouter {
     public router: Router = Router()
 
     constructor() {
         this.config()
     }
-
+    private middlewareGet = ['RR.HH', 'Administrador']
+    private middlewarePost = ['RR.HH', 'Admistrador']
     /**
      * config
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isRRHH || authJWT.isAdmin], employeeController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isRRHH || authJWT.isAdmin], employeeController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isRRHH || authJWT.isAdmin], employeeController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isRRHH || authJWT.isAdmin], employeeController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isRRHH || authJWT.isAdmin], employeeController.delete)
+        this.router.get('/', [verifyToken, verifyRoleAuth(this.middlewareGet)], employeeController.findAll)
+        this.router.get('/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], employeeController.findById)
+        this.router.post('/', [verifyToken, verifyRoleAuth(this.middlewarePost)], employeeController.create)
+        this.router.put('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], employeeController.update)
+        this.router.delete('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], employeeController.delete)
     }
 
 }

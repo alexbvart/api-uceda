@@ -5,85 +5,47 @@ import Role from "../models/Role";
 import { NextFunction, Request, Response } from "express";
 
 
-class AuthJWT {
 
-    /**
-     * verifyToken
-     */
-    public async verifyToken(req: Request, res: Response, next: NextFunction) {
-        const token = req.headers["x-access-token"]
 
-        if (!token) return res.status(403).json({ message: "No token provided" });
-        try {
-            const decoded = jwt.verify(token, config.SECRET)
-            req.body.userId = decoded.id
-            const user = await User.findById(req.body.userId, { password: 0 });
-            if (!user) return res.status(404).json({ message: "No user found" })
+/**
+ * verifyToken
+ */
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers["x-access-token"]
+    if (!token) return res.status(403).json({ message: "No token provided" });
+    try {
+        const decoded = jwt.verify(token + "", config.SECRET)
 
-            next();
-        } catch (error) {
-            return res.status(401).json({ message: "Unauthorized!" })
-        }
+        req.body.userId = decoded.id
+        const user = await User.findById(req.body.userId, { password: 0 });
+        if (!user) return res.status(404).json({ message: "No user found" })
+        next();
+    } catch (error) {
+        return res.status(401).json({ message: "Unauthorized!" })
     }
+}
 
 
-    /**
-     * verifyRoles
-     */
-    public async isAdmin(req: Request, res: Response, next: NextFunction) {
+
+/**
+ * verifyRoleAuth
+ */
+export const verifyRoleAuth = (roles: Array<string>) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const user = await User.findById(req.body.userId)
-            const roles = await Role.find({ _id: { $in: user.roles } })
+            const { userId } = req.body
 
-            for (let i = 0; i < roles.length; i++) {
-                const rol = roles[i].name;
-                if (rol == "Administrador") {
-                    next()
-                    return;
+            const user = await User.findById(userId)
+            const role = await Role.find({ _id: { $in: user.roles } })
+            roles.forEach((rol: string) => {
+                for (const iterator of role) {
+                    if (iterator.name == rol) next()
                 }
-            }
-            return res.status(403).json({ message: "Require Admin Role!" })
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ message: error });
-        }
-    }
-
-    
-    /**
-     * verifyRoles
-     */
-    public async isVentas(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = await User.findById(req.body.userId)
-            const roles = await Role.find({ _id: { $in: user.roles } })
-
-            for (let i = 0; i < roles.length; i++) {
-                const rol = roles[i].name;
-                if (rol == "Ventas") {
-                    next()
-                    return;
-                }
-            }
-            return res.status(403).json({ message: "Require Ventas Role!" })
-        } catch (error) {
-            console.log(error)
-            return res.status(500).send({ message: error });
-        }
-    }
-    public async isRRHH(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = await User.findById(req.body.userId)
-            const roles = await Role.find({ _id: { $in: user.roles } })
-
-            for (let i = 0; i < roles.length; i++) {
-                const rol = roles[i].name;
-                if (rol == "RR.HH") {
-                    next()
-                    return;
-                }
-            }
-            return res.status(403).json({ message: "Require RRHH Role!" })
+            });
+            if (roles.length > 1)
+                return res.status(403).json({ message: `Require ${roles[0]} or ${roles[1]} Role!` })
+            else
+                return res.status(403).json({ message: `Require ${roles[0]} Role!` })
         } catch (error) {
             console.log(error)
             return res.status(500).send({ message: error });
@@ -91,5 +53,6 @@ class AuthJWT {
     }
 }
 
-const authJWT = new AuthJWT()
-export default authJWT
+
+
+

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import categoryController from '../../controllers/productCategoryController'
-import { authJWT } from '../../middleware';
+import { verifyRoleAuth, verifyToken } from '../../middleware/authJWT';
 
 class CategoryRouter {
     public router: Router = Router()
@@ -8,17 +8,18 @@ class CategoryRouter {
     constructor() {
         this.config()
     }
-
+    private middlewareGet = ['Ventas', 'Administrador']
+    private middlewarePost = ['Admistrador']
     /**
      * config
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], categoryController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], categoryController.findById)
-        this.router.post('/', [authJWT.verifyToken,  authJWT.isAdmin], categoryController.create)
-        this.router.put('/:id', [authJWT.verifyToken,  authJWT.isAdmin], categoryController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isAdmin], categoryController.delete)
+        this.router.get('/', [verifyToken, verifyRoleAuth(this.middlewareGet)], categoryController.findAll)
+        this.router.get('/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], categoryController.findById)
+        this.router.post('/', [verifyToken, verifyRoleAuth(this.middlewarePost)], categoryController.create)
+        this.router.put('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], categoryController.update)
+        this.router.delete('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], categoryController.delete)
     }
 
 }

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import workstationController from "../../controllers/workstationController";
-import { authJWT } from '../../middleware';
+import { verifyRoleAuth, verifyToken } from "../../middleware/authJWT";
+
 class WorkstationRouter {
     public router: Router = Router()
 
@@ -8,16 +9,18 @@ class WorkstationRouter {
         this.config()
     }
 
+    private middlewareGet = ['RR.HH', 'Ventas', 'Administrador']
+    private middlewarePost = ['RR.HH', 'Admistrador']
     /**
      * config
      */
     public config() {
 
-        this.router.get('/', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], workstationController.findAll)
-        this.router.get('/:id', [authJWT.verifyToken, authJWT.isVentas || authJWT.isAdmin], workstationController.findById)
-        this.router.post('/', [authJWT.verifyToken, authJWT.isAdmin], workstationController.create)
-        this.router.put('/:id', [authJWT.verifyToken, authJWT.isAdmin], workstationController.update)
-        this.router.delete('/:id', [authJWT.verifyToken, authJWT.isAdmin], workstationController.delete)
+        this.router.get('/', [verifyToken, verifyRoleAuth(this.middlewareGet)], workstationController.findAll)
+        this.router.get('/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], workstationController.findById)
+        this.router.post('/', [verifyToken, verifyRoleAuth(this.middlewarePost)], workstationController.create)
+        this.router.put('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], workstationController.update)
+        this.router.delete('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], workstationController.delete)
     }
 
 }
