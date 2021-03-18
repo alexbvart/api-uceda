@@ -9,7 +9,7 @@ class CategoryRouter {
         this.config()
     }
     private middlewareGet = ['Ventas', 'Administrador']
-    private middlewarePost = ['Admistrador']
+    private middlewarePost = ['Administrador']
     /**
      * config
      */

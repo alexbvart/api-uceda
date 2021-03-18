@@ -75,6 +75,30 @@ class AuthController {
         })
     }
 
+
+
+    public async logout(req: Request, res: Response) {
+        const { id } = req.body
+        const userFound = await User.findById(id)
+        try {
+
+            await User.findByIdAndDelete(id)
+            const { email, username, password, roles } = userFound
+            const newUser = await User.create({
+                email: email,
+                username: username,
+                password: password,
+                roles: roles
+            })
+            // const token = jwt.sign({ id: userFound._id}, config.SECRET, {expiresIn: '1'},)
+            console.log();
+            res.json(newUser)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Error of server" })
+        }
+    }
+
     /**
      * all
      */
@@ -143,18 +167,18 @@ class AuthController {
 
     }
 
-       /**
-     * updateEmail
-     */
-        public async updateEmail(newEmail: any, user_id: any) {
-            
-            const userUpdate = await User.findByIdAndUpdate(user_id, {
-                email: newEmail
-            }, {
-                new: true
-            })
-            
-        }
+    /**
+  * updateEmail
+  */
+    public async updateEmail(newEmail: any, user_id: any) {
+
+        const userUpdate = await User.findByIdAndUpdate(user_id, {
+            email: newEmail
+        }, {
+            new: true
+        })
+
+    }
 
 }
 

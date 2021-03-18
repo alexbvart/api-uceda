@@ -10,7 +10,7 @@ class SaleRouter {
     }
 
     private middlewareGet = ['Ventas', 'Administrador']
-    private middlewarePost = ['Admistrador']
+    private middlewarePost = ['Administrador']
     /**
      * config
      */
@@ -18,8 +18,8 @@ class SaleRouter {
 
         this.router.get('/', [verifyToken, verifyRoleAuth(this.middlewareGet)], saleController.findAll)
         this.router.get('/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], saleController.findById)
-        this.router.post('/', [verifyToken, verifyRoleAuth(this.middlewarePost)], saleController.create)
-        this.router.put('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], saleController.update)
+        this.router.post('/', [verifyToken, verifyRoleAuth(this.middlewareGet)], saleController.create)
+        this.router.put('/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], saleController.update)
         this.router.delete('/:id', [verifyToken, verifyRoleAuth(this.middlewarePost)], saleController.delete)
         this.router.delete('/detalles/:id', saleController.deleteDetails)
     }

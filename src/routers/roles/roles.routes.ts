@@ -11,7 +11,7 @@ class RoleRouter {
     }
 
     private middlewareGet = ['RR.HH', 'Administrador']
-    private middlewarePost = ['Admistrador']
+    private middlewarePost = ['Administrador']
 
     /**
      * config

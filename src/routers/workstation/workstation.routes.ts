@@ -10,7 +10,7 @@ class WorkstationRouter {
     }
 
     private middlewareGet = ['RR.HH', 'Ventas', 'Administrador']
-    private middlewarePost = ['RR.HH', 'Admistrador']
+    private middlewarePost = ['RR.HH', 'Administrador']
     /**
      * config
      */

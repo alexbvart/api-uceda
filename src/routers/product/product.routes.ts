@@ -11,7 +11,7 @@ class ProductRouter {
     }
 
     private middlewareGet = ['Ventas', 'Administrador']
-    private middlewarePost = ['Admistrador']
+    private middlewarePost = ['Administrador']
 
     /**
      * config

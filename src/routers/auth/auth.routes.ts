@@ -10,12 +10,13 @@ class AuthRouter {
         this.config()
     }
     private middlewareGet = ['RR.HH', 'Administrador']
-    private middlewarePost = ['Admistrador']
+    private middlewarePost = ['Administrador']
 
     public config() {
 
         this.router.post('/signin', authController.singIn)
         this.router.post('/signup', authController.signUp)
+        this.router.post('/logout', authController.logout)
         this.router.get('/user/all', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.all)
         this.router.get('/user/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.findID)
         this.router.put('/user/false/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.falseUser)
