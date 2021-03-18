@@ -16,10 +16,10 @@ class AuthRouter {
 
         this.router.post('/signin', authController.singIn)
         this.router.post('/signup', authController.signUp)
-        this.router.get('/user/all', [verifyToken,verifyRoleAuth(this.middlewareGet)], authController.all)
-        this.router.get('/user/:id', [verifyToken,verifyRoleAuth(this.middlewareGet)], authController.findID)
-        this.router.put('/user/false/:id', [verifyToken,verifyRoleAuth(this.middlewareGet)], authController.falseUser)
-        this.router.put('/user/true/:id', [verifyToken,verifyRoleAuth(this.middlewareGet)], authController.trueUser)
+        this.router.get('/user/all', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.all)
+        this.router.get('/user/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.findID)
+        this.router.put('/user/false/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.falseUser)
+        this.router.put('/user/true/:id', [verifyToken, verifyRoleAuth(this.middlewareGet)], authController.trueUser)
     }
 }
 const route = new AuthRouter();

@@ -32,20 +32,29 @@ export const verifyToken = async (req: Request, res: Response, next: NextFunctio
  */
 export const verifyRoleAuth = (roles: Array<string>) => {
     return async (req: Request, res: Response, next: NextFunction) => {
+
         try {
             const { userId } = req.body
 
+
             const user = await User.findById(userId)
             const role = await Role.find({ _id: { $in: user.roles } })
+            var status = false
             roles.forEach((rol: string) => {
                 for (const iterator of role) {
-                    if (iterator.name == rol) next()
+                    if (iterator.name == rol) {
+                        status = true
+                        next();
+                    }
                 }
             });
-            if (roles.length > 1)
-                return res.status(403).json({ message: `Require ${roles[0]} or ${roles[1]} Role!` })
-            else
-                return res.status(403).json({ message: `Require ${roles[0]} Role!` })
+            if (!status) {
+                if (roles.length > 1)
+                    return res.status(401).json({ message: `Require ${roles[0]} or ${roles[1]} Role!` })
+                else
+                    return res.status(401).json({ message: `Require ${roles[0]} Role!` })
+            }
+
         } catch (error) {
             console.log(error)
             return res.status(500).send({ message: error });
