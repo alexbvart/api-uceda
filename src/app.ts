@@ -4,6 +4,7 @@ import {createRoles, createBrands, createCategories, createWorkstation} from './
 import morgan from 'morgan';
 import cors from 'cors';
 import indexRouter from './routers/router';
+import path from 'path';
 export class App {
 
     private app: Application
@@ -28,6 +29,7 @@ export class App {
         this.app.use(cors())
         this.app.use(express.json())
         this.app.use(express.urlencoded({extended: false}))
+        this.app.use('/uploads', express.static(path.resolve('uploads')));
     }
 
 
