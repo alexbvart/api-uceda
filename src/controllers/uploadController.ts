@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import Document from '../models/Document';
-
+import Document, {IDocument} from '../models/Document';
+import fs from 'fs-extra';
+import path from 'path';
 class UploadController {
 
 
@@ -48,6 +49,17 @@ class UploadController {
         }
     }
 
+    /**
+     * delete
+     */
+    public async delete(req: Request, res: Response) {
+        const { id } = req.params;
+    const document = await Document.findByIdAndRemove(id) as IDocument;
+    if (document) {
+        await fs.unlink(path.resolve(`src/${document.pathDocument}`));
+    }
+    return res.json({ message: 'Document Deleted' })
+    }
 
 }
 

@@ -1,12 +1,20 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
 const DocumentSchema = new Schema(
     {
         name: String,
         pathDocument: String,
-    },{
-        timestamps: true,
-        versionKey: false
-    }
+    }, {
+    timestamps: true,
+    versionKey: false
+}
 )
-export default model("DocumentUpload", DocumentSchema)
+
+export interface IDocument extends Document {
+
+    name: string;
+    pathDocument: string;
+}
+
+export default model<IDocument>('DocumentUpload', DocumentSchema);
+
