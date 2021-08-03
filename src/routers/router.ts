@@ -10,6 +10,9 @@ import saleRoutes from './sale/sale.routes';
 import employeeRoutes from './employee/employee.routes';
 import workstationRoutes from './workstation/workstation.routes';
 import coustomerRoutes from './coustomer/coustomer.routes';
+import uploadRoutes from './uploads/upload.routes';
+
+
 class Route{
 
     public router: Router = Router()
@@ -31,6 +34,7 @@ class Route{
         this.router.use('/empleado', employeeRoutes)
         this.router.use('/puesto', workstationRoutes)
         this.router.use('/cliente', coustomerRoutes)
+        this.router.use('/uploads', uploadRoutes)
     }
 }
 
