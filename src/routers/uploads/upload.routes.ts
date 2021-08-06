@@ -18,7 +18,7 @@ class UploadRouter {
         this.router.get('/', uploadController.findAll)
         this.router.get('/:id', uploadController.findById)
         this.router.delete('/:id', uploadController.delete)
-        // Delete
+       
         
     }
 }

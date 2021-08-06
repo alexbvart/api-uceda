@@ -4,10 +4,23 @@ const DocumentSchema = new Schema(
     {
         name: String,
         pathDocument: String,
-    }, {
-    timestamps: true,
-    versionKey: false
-}
+        process: {
+            type: Schema.Types.ObjectId,
+            ref: 'ProcessDocument'
+        },
+        type: {
+            type: Schema.Types.ObjectId,
+            ref: 'TypeDocument'
+        },
+        status: {
+            type: Schema.Types.ObjectId,
+            ref: 'StatusDocument'
+        }
+    },
+    {
+        timestamps: true,
+        versionKey: false
+    }
 )
 
 export interface IDocument extends Document {

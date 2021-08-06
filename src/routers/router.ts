@@ -11,6 +11,7 @@ import employeeRoutes from './employee/employee.routes';
 import workstationRoutes from './workstation/workstation.routes';
 import coustomerRoutes from './coustomer/coustomer.routes';
 import uploadRoutes from './uploads/upload.routes';
+import uploadController from '../controllers/uploadController';
 
 
 class Route{
@@ -35,6 +36,8 @@ class Route{
         this.router.use('/puesto', workstationRoutes)
         this.router.use('/cliente', coustomerRoutes)
         this.router.use('/uploads', uploadRoutes)
+        this.router.use('/data', uploadController.listData)
+        // this.router.get('/document', uploadController.getDocument)
     }
 }
 
